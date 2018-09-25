@@ -86,7 +86,7 @@ class PalavrasMaisFrequentesCluster:
 
 		            if(contador == n):
 		                break
-		            lista_mais_frequentes[n_cluster].append(tupla[0])
+		            lista_mais_frequentes[n_cluster].append(tupla)
 		    
 		    return lista_mais_frequentes
 
