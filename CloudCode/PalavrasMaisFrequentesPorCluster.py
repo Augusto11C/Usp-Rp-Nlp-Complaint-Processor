@@ -4,7 +4,7 @@ import os
 from sklearn.cluster import KMeans
 
 
-class PalavrasMaisFrequentesCluster:
+class PalavrasMaisFrequentesPorCluster:
  
 	def __get_corpus():
 	    data = []
@@ -79,7 +79,7 @@ class PalavrasMaisFrequentesCluster:
 	    def __get_n_palavras_mais_frequentes_cluster(n, lista_palavras_clusterizadas):
 		    lista_mais_frequentes = [[] for _ in range(len(lista_palavras_clusterizadas))]
 		    for n_cluster,cluster in enumerate(lista_palavras_clusterizadas):
-		        tuplas = PalavrasMaisFrequentesCluster.__get_tupla_frequencia_palavras(cluster)
+		        tuplas = PalavrasMaisFrequentesPorCluster.__get_tupla_frequencia_palavras(cluster)
 		        print(tuplas)
 		        cont = 0
 		        for contador,tupla in enumerate(tuplas):
@@ -92,7 +92,7 @@ class PalavrasMaisFrequentesCluster:
 
 	    #método principal que recebe numero n e caminho path e devolve lista de listas das palavras ,ais frequentes por cluster
 	    def gerar_n_palavras_mais_frequentes_por_cluster(n, nome_corpus, kmeans):
-		    corpus = PalavrasMaisFrequentesCluster.__get_corpus(nome_corpus)
-		    corpus_clusterizado = PalavrasMaisFrequentesCluster.__get_corpus_clusterizado(corpus,kmeans)
-		    palavras_clusterizadas = PalavrasMaisFrequentesCluster.__get_palavras_clusterizadas(corpus_clusterizado)
-		    return PalavrasMaisFrequentesCluster.__get_n_palavras_mais_frequentes_cluster(n, palavras_clusterizadas)
+		    corpus = PalavrasMaisFrequentesPorCluster.__get_corpus(nome_corpus)
+		    corpus_clusterizado = PalavrasMaisFrequentesPorCluster.__get_corpus_clusterizado(corpus,kmeans)
+		    palavras_clusterizadas = PalavrasMaisFrequentesPorCluster.__get_palavras_clusterizadas(corpus_clusterizado)
+		    return PalavrasMaisFrequentesPorCluster.__get_n_palavras_mais_frequentes_cluster(n, palavras_clusterizadas)
