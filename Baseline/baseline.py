@@ -7,13 +7,12 @@ import numpy as np
 from sklearn import metrics
 from sklearn.metrics import silhouette_score
 import sys
-sys.path.insert(0, '../CloudCode')
-import wordcloud
+sys.path.insert(0, '..\CloudCode')
+from Ourwordcloud import Ourwordcloud
 import PalavrasMaisFrequentesPorCluster
 import GroupedColorFunc
 
 data = []
-
 stopwordz = nltk.corpus.stopwords.words('portuguese')
 
 for d in os.listdir("../../CidadaoData/2017/Dezembro"):
@@ -35,5 +34,9 @@ kmeans = KMeans(n_clusters=2, verbose=1).fit(td)
 labels = kmeans.labels_
 print(metrics.silhouette_score(td, labels, metric='euclidean'))
 
+lista_das_palavras_mais_frequentes_por_cLuster = PalavrasMaisFrequentesPorCluster.PalavrasMaisFrequentesPorCluster.gerar_n_palavras_mais_frequentes_por_cluster(kmeans.n_clusters, kmeans)
+#print(lista_das_palavras_mais_frequentes_por_cLuster)
 
+#listaKappa = [[("augusto",20)], [("lucas",10)], [("Fernado",5)]]
+Ourwordcloud().gerar_wordcloud_e_salvar(lista_palavras_mais_frequentes_clusterizadas = lista_das_palavras_mais_frequentes_por_cLuster, nome_do_arquivo = "wordCloud")
 
