@@ -42,7 +42,7 @@ class SimpleGroupedColorFunc(object):
             color_to_words = self.colorir_palavras_de_um_cluster(palavras_concatenadas, cor)
             grouped_color_func = GroupedColorFunc.GroupedColorFunc(palavras_concatenadas, default_color)
 
-            wc = WordCloud(width = 2000,height = 1800, background_color = 'white', min_font_size = 5, ).generate(palavras_concatenadas)
+            wc = WordCloud(width = 2000,height = 1800, background_color = 'white', min_font_size = 5, relative_scaling = 1 ).generate(palavras_concatenadas)
             wc.recolor(color_func = grouped_color_func)
             plt.figure()
             plt.imshow(wc, interpolation="bilinear")
