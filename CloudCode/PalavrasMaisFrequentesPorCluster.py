@@ -91,8 +91,8 @@ class PalavrasMaisFrequentesPorCluster:
             return lista_mais_frequentes
 
         #método principal que recebe numero n e caminho path e devolve lista de listas das palavras ,ais frequentes por cluster
-        def gerar_n_palavras_mais_frequentes_por_cluster(n, nome_corpus, kmeans):
-            corpus = PalavrasMaisFrequentesPorCluster.__get_corpus(nome_corpus)
+        def gerar_n_palavras_mais_frequentes_por_cluster(n, kmeans):
+            corpus = PalavrasMaisFrequentesPorCluster.__get_corpus()
             corpus_clusterizado = PalavrasMaisFrequentesPorCluster.__get_corpus_clusterizado(corpus,kmeans)
             palavras_clusterizadas = PalavrasMaisFrequentesPorCluster.__get_palavras_clusterizadas(corpus_clusterizado)
             return PalavrasMaisFrequentesPorCluster.__get_n_palavras_mais_frequentes_cluster(n, palavras_clusterizadas)
