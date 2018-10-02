@@ -3,6 +3,7 @@ import os
 import random
 import GroupedColorFunc
 from wordcloud import WordCloud, get_single_color_func
+import PalavrasMaisFrequentesPorCluster
 
 class SimpleGroupedColorFunc(object):
 
