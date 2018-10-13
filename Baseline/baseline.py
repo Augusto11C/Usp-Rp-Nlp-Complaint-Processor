@@ -10,6 +10,7 @@ import sys
 
 sys.path.insert(0, '..\CloudCode')
 from Ourwordcloud import Ourwordcloud
+# import Ourwordcloud
 import PalavrasMaisFrequentesPorCluster
 import GroupedColorFunc
 
