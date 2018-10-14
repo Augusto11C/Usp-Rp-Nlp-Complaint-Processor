@@ -25,13 +25,13 @@ CV = CountVectorizer(analyzer="word",preprocessor=None,stop_words=stopwordz)
 
 td = CV.fit_transform(text for text in data)
 
-kmeans = KMeans(n_clusters=2, verbose=1).fit(td)
+kmeans = KMeans(n_clusters=9, verbose=1).fit(td)
 
 TV = TfidfVectorizer(analyzer="word",preprocessor=None,stop_words=stopwordz)
 
 td = TV.fit_transform(text for text in data)
 
-kmeans = KMeans(n_clusters=2, verbose=1).fit(td)
+kmeans = KMeans(n_clusters=9, verbose=1).fit(td)
 
 labels = kmeans.labels_
 print(metrics.silhouette_score(td, labels, metric='euclidean'))
