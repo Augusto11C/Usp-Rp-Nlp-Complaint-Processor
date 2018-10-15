@@ -17,15 +17,23 @@ class Ourwordcloud():
         color_to_words[cor] = lista_palavras_mais_frequentes_do_cluster
         return color_to_words
 
+    # def multiplicacao_das_palavras(self, lista_palavras_mais_frequentes_clusterizadas):
+    #     text = ""
+    #     for  palavra, frequencia in lista_palavras_mais_frequentes_clusterizadas:
+    #         print(palavra,frequencia)
+    #         if frequencia > 2 :
+    #             for i in range(frequencia):
+    #                 text = text + " " + palavra
+    #                 print(text)
+    #     return text 
+    # 
+    #  
     def multiplicacao_das_palavras(self, lista_palavras_mais_frequentes_clusterizadas):
         text = ""
         for  palavra, frequencia in lista_palavras_mais_frequentes_clusterizadas:
-            print(palavra,frequencia)
-            if frequencia > 2 :
-                for i in range(frequencia):
-                    text = text + " " + palavra
-                    print(text)
-        return text  
+            text = text + " " + palavra
+        return text
+
 
     def gerar_wordcloud_e_salvar(self, lista_palavras_mais_frequentes_clusterizadas, nome_do_arquivo):# lista_palavras_mais_frequentes_clusterizados [[(palavra1_cluster1,freq)],[(palavra1_cluster2,freq)]]
         default_color = 'grey'
@@ -43,13 +51,13 @@ class Ourwordcloud():
             #print(color_to_words)
             grouped_color_func = GroupedColorFunc.GroupedColorFunc(color_to_words, default_color)
             #print(grouped_color_func)
-            wc = WordCloud(width = 2000,height = 1800, background_color = 'white', min_font_size = 5, relative_scaling = 1 ).generate(palavras_concatenadas)
+            wc = WordCloud(width = 2000,height = 1800, background_color = 'white', min_font_size = 5, relative_scaling = 0.5,  ).generate(palavras_concatenadas)
             #print("Depois WordCloud")
             
             wc.recolor(color_func = grouped_color_func)
             plt.figure()
             plt.imshow(wc, interpolation="bilinear")
             plt.axis("off")
-            plt.show()
+            # plt.show()
             wc.to_file(nome_do_arquivo + "_cluster_" + str(cluster+1) + ".png")
         

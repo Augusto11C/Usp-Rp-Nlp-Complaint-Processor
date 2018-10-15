@@ -1,5 +1,6 @@
 import nltk
 import pickle
+import re
 import os
 from sklearn.cluster import KMeans
 
@@ -12,8 +13,8 @@ class PalavrasMaisFrequentesPorCluster:
         stopwordz = nltk.corpus.stopwords.words('portuguese')
 
         for d in os.listdir("../../CidadaoData/2017/Dezembro"):
-            dict = pickle.load(open("../../CidadaoData/2017/Dezembro/"+d,"rb"))
-            data.append(dict["reclamacao"].strip())
+            dict = pickle.load(open("../../CidadaoData/2017/Dezembro/"+d,"rb"), encoding="utf-8")
+            data.append(dict["reclamacao"].strip().lower())
         return data
 
     #recebe uma lista do corpus e um objeto kmeans e devolve uma lista de listas de textos, em que cada lista interna representa um cluster
@@ -34,12 +35,12 @@ class PalavrasMaisFrequentesPorCluster:
                 palavras = string.split(" ")
                 for palavra in palavras:
                     palavras_clusterizadas[n_cluster].append(palavra)
-        return palavras_clusterizadas
-        
-        '''stopWords = [x for x in ENGLISH_STOP_WORDS]
-        otherCommonWords = ['make','year','years','new','people','said','say','time','brown','good','told','000','says','took','way','think','going','just','don','did','use','best','didn', 'mln', 'cts', 'net', 'dlrs', 'shr', 'blah', 'revs', 'qtr', 'oper', 'march', 'bank', 'company', 'corp', 'sales', 'dlr', 'billion', 'stg', 'loss', 'profit', 'revs', 'div', 'pct', 'record', 'prior', 'pay', 'qtly', 'dividend', '4th', 'note', 'sets', 'avg', 'shrs', 'includes', 'quarterly', 'share', 'shares', 'miles', 'mths', 'april', 'february', 'stock', 'prices', 'price', 'market', 'government', 'exchange', 'january', 'york', 'week', 'quarter', 'december', 'added', 'production', 'bbl', 'feb', 'official', 'international', 'deficit', 'raises', 'debit', 'trade', 'baker', 'rate', 'crude', 'tax', 'debt', 'debts', 'money', 'business', 'offer', 'foreign', 'contract', 'agreement', 'systems', 'board', '1st', '2nd', '3rd', 'commercial', 'dollar', 'dollars', 'excludes', 'extraordinary', 'securities', 'trading', 'economic', 'current', 'financial', 'issue', 'today', 'rose', 'expected', 'dec', 'jan', 'gain', 'declared', 'months', 'payable', 'available', 'income', 'operations', 'regular', 'traders', 'revenue', 'national', 'world', 'effective', 'wti', 'making', 'sale', 'results', 'periods', 'respectively', 'gain', 'month', 'common', 'credit', 'buy', 'public', 'initial', 'talks', 'total', 'bond', 'expects', 'sell', 'twa', 'averager', 'ended', 'forth', 'compared', 'period', 'sees', 'ago', 'fiscal', 'budget', 'end', 'department', 'day', 'group', 'cash', 'earnings', 'include', 'exclude', 'june', 'pre', 'rev', 'fall', 'raise', 'agreed', 'fourth', 'proceeds', 'american', 'output', 'president', 'qtlys', 'analysts', 'tonnes']
+        #return palavras_clusterizadas
+        stopwordz = nltk.corpus.stopwords.words('portuguese')+["","\r\n","pois","que","pra","ter","fazer","ser","para"]        
+        #stopWords = [x for x in ENGLISH_STOP_WORDS]
+        '''otherCommonWords = ['make','year','years','new','people','said','say','time','brown','good','told','000','says','took','way','think','going','just','don','did','use','best','didn', 'mln', 'cts', 'net', 'dlrs', 'shr', 'blah', 'revs', 'qtr', 'oper', 'march', 'bank', 'company', 'corp', 'sales', 'dlr', 'billion', 'stg', 'loss', 'profit', 'revs', 'div', 'pct', 'record', 'prior', 'pay', 'qtly', 'dividend', '4th', 'note', 'sets', 'avg', 'shrs', 'includes', 'quarterly', 'share', 'shares', 'miles', 'mths', 'april', 'february', 'stock', 'prices', 'price', 'market', 'government', 'exchange', 'january', 'york', 'week', 'quarter', 'december', 'added', 'production', 'bbl', 'feb', 'official', 'international', 'deficit', 'raises', 'debit', 'trade', 'baker', 'rate', 'crude', 'tax', 'debt', 'debts', 'money', 'business', 'offer', 'foreign', 'contract', 'agreement', 'systems', 'board', '1st', '2nd', '3rd', 'commercial', 'dollar', 'dollars', 'excludes', 'extraordinary', 'securities', 'trading', 'economic', 'current', 'financial', 'issue', 'today', 'rose', 'expected', 'dec', 'jan', 'gain', 'declared', 'months', 'payable', 'available', 'income', 'operations', 'regular', 'traders', 'revenue', 'national', 'world', 'effective', 'wti', 'making', 'sale', 'results', 'periods', 'respectively', 'gain', 'month', 'common', 'credit', 'buy', 'public', 'initial', 'talks', 'total', 'bond', 'expects', 'sell', 'twa', 'averager', 'ended', 'forth', 'compared', 'period', 'sees', 'ago', 'fiscal', 'budget', 'end', 'department', 'day', 'group', 'cash', 'earnings', 'include', 'exclude', 'june', 'pre', 'rev', 'fall', 'raise', 'agreed', 'fourth', 'proceeds', 'american', 'output', 'president', 'qtlys', 'analysts', 'tonnes']
         for w in otherCommonWords:
-            stopWords.append(w)
+            stopWords.append(w)'''
         palavras_clusterizadas = [[] for _ in range(len(corpus_clusterizado))]
         for n_cluster,cluster in enumerate(corpus_clusterizado):
             string = ""
@@ -50,12 +51,12 @@ class PalavrasMaisFrequentesPorCluster:
             palavras = palavras.split(" ")
             
             for palavra in palavras:
-            word = palavra.replace("\\s+","")
+                word = palavra.replace("\\s+","")
+                
+                if(word not in stopwordz and not len(word) <= 2 and not word.isdigit()):
+                    palavras_clusterizadas[n_cluster].append(word)
             
-            if(word not in stopWords and not len(word) <= 2 and not word.isdigit()):
-              palavras_clusterizadas[n_cluster].append(word)
-          
-        return palavras_clusterizadas'''
+        return palavras_clusterizadas
 
         #recebe uma lista simples de palavras e devolve uma lista de tuplas(palavra, frequencia)
     def __get_tupla_frequencia_palavras(lista_palavras): 
