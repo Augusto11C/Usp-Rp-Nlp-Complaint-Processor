@@ -38,13 +38,23 @@ class Preprocessor():
                 tokenizedWords.append(word)
         return tokenizedWords
 
-    def returnTFIDF(self, data):
+    @classmethod
+    def returnTFIDF(cls, data):
         stopwordz = nltk.corpus.stopwords.words('portuguese')
-        TV = TfidfVectorizer(analyzer="word",preprocessor=self.preprocess,stop_words=stopwordz, lowercase = True)
-        TV2 = TV.fit_transform(text for text in data)
-        print(TV.get_feature_names())
+        TV = CountVectorizer(analyzer="word",preprocessor=Preprocessor.preprocess,stop_words=stopwordz, lowercase = True)
+        td = TV.fit_transform(text for text in data)
+        #print(TV.get_feature_names())
+        return td
 
-    def get_corpus():
+    @classmethod
+    def returnTF(cls, data):
+        stopwordz = nltk.corpus.stopwords.words('portuguese')
+        TV = TfidfVectorizer(analyzer="word",preprocessor=Preprocessor.preprocess,stop_words=stopwordz, lowercase = True)
+        td = TV.fit_transform(text for text in data)
+        #print(TV.get_feature_names())
+        return td
+
+    '''def get_corpus():
         data = []
 
         
@@ -53,9 +63,9 @@ class Preprocessor():
             dict = pickle.load(open("../../CidadaoData/2017/Dezembro/"+d,"rb"), encoding="utf-8")
             data.append(dict["reclamacao"].strip().lower())
         return data
+'''
 
-
-data = Preprocessor.get_corpus()
+'''data = Preprocessor.get_corpus()
 vectorizer = TfidfVectorizer        
 Preprocessor.returnTFIDF(Preprocessor, data)
-   
+'''
