@@ -13,7 +13,7 @@ from Ourwordcloud import Ourwordcloud
 sys.path.insert(1, '..\Preprocessor')
 from Preprocessor import Preprocessor
 # import Ourwordcloud
-import PalavrasMaisFrequentesPorCluster
+from PalavrasMaisFrequentesPorCluster import PalavrasMaisFrequentesPorCluster
 import GroupedColorFunc
 
 data = []
@@ -36,7 +36,8 @@ kmeans = KMeans(n_clusters=9, verbose=1).fit(td)
 labels = kmeans.labels_
 print(metrics.silhouette_score(td, labels, metric='euclidean'))
 
-lista_das_palavras_mais_frequentes_por_cLuster = PalavrasMaisFrequentesPorCluster.PalavrasMaisFrequentesPorCluster.gerar_n_palavras_mais_frequentes_por_cluster(20, kmeans)
+
+lista_das_palavras_mais_frequentes_por_cLuster = PalavrasMaisFrequentesPorCluster(data).gerar_n_palavras_mais_frequentes_por_cluster(20, kmeans)
 print(lista_das_palavras_mais_frequentes_por_cLuster)
 
 #listaKappa = [[("augusto",20)], [("lucas",10)], [("Fernado",5)]]
