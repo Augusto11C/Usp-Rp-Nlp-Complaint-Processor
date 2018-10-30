@@ -38,13 +38,20 @@ def text_to_id(text):
     text = re.sub('[^0-9a-zA-Z]', ' ', text)
     return text
 
+def save_waifu(waifu, waifu_addr):
+    waifu_dir = "/".join(waifu_addr.split('/')[:-1])
+    if not os.path.exists(waifu_dir):
+            os.makedirs(waifu_dir)
+    with open(waifu_addr, "wb") as f:
+        pickle.dump(waifu, f)    
+    pass
+
 class IncrementalDict(dict):
     def __missing__(self, key):
         return None
 
 RESULTS_FILENAME = "TopicosResumidos.txt"
 BASEFOLDER = 'CidadaoData'
-# PPRINTER = PrettyPrinter(4)
 SAVEFOLDER = "CategorizedWaifus/"
 TOPICS = IncrementalDict()
 
@@ -119,9 +126,7 @@ governamental = np.array([
     r'mensalidades'
 ])
 
-
-
-if __name__ == "__main__":
+def create_waifus():    
     for year in os.listdir(BASEFOLDER):
         if "waifu" in year:
             continue
@@ -213,9 +218,30 @@ if __name__ == "__main__":
                         save_waifu(waifu, waifu_addr)
                         continue
 
-def save_waifu(waifu, waifu_addr):
-    if not os.path.exists(waifu_addr):
-            os.makedirs(waifu_addr)
-    with open(waifu_addr, "wb") as f:
-        pickle.dump(waifu, f)    
-    pass
+
+def confirm_waifus():
+    count_dick = IncrementalDict()
+    for year in os.listdir(SAVEFOLDER):
+        for month in os.listdir(SAVEFOLDER + "/" + year):
+            for waifu_name in os.listdir(SAVEFOLDER + "/" + year + "/" + month):
+                with open(SAVEFOLDER + "/" + year + "/" + month + "/" + waifu_name, mode='rb') as waifu_file:
+                    waifu = pickle.load(waifu_file)
+                    waifu_cat = waifu['categoria']
+                    if not count_dick[waifu_cat]:
+                        count_dick[waifu_cat] = 1
+                    else:
+                        count_dick[waifu_cat] += 1
+    pprint(count_dick)
+
+import sys
+if __name__ == "__main__":
+    option = sys.argv[1]
+    if option == "create":
+        create_waifus()
+        print("Waifus categorized and created anew successfully")
+    
+    elif option == "confirm":
+        confirm_waifus()
+        
+    pass    
+
