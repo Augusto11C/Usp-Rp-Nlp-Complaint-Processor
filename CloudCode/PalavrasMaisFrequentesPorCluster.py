@@ -10,16 +10,22 @@ from Preprocessor import Preprocessor
 
 
 class PalavrasMaisFrequentesPorCluster:
- 
-    def __get_corpus():
-        data = []
 
-        stopwordz = nltk.corpus.stopwords.words('portuguese')
+    data = []
+    
+    def __init__(self,data):
+        self.data = data
 
-        for d in os.listdir("../../CidadaoData/2017/Dezembro"):
-            dict = pickle.load(open("../../CidadaoData/2017/Dezembro/"+d,"rb"), encoding="utf-8")
-            data.append(dict["reclamacao"].strip().lower())
-        return data
+
+    def __get_corpus(self):
+        if not self.data:
+            stopwordz = nltk.corpus.stopwords.words('portuguese')
+
+            for d in os.listdir("../../CidadaoData/2017/Dezembro"):
+                dict = pickle.load(open("../../CidadaoData/2017/Dezembro/"+d,"rb"), encoding="utf-8")
+                self.data.append(dict["reclamacao"].strip().lower())
+        return self.data
+        
 
     #recebe uma lista do corpus e um objeto kmeans e devolve uma lista de listas de textos, em que cada lista interna representa um cluster
     def __get_corpus_clusterizado(corpus, kmeans):
@@ -100,8 +106,8 @@ class PalavrasMaisFrequentesPorCluster:
         return lista_mais_frequentes
 
         #método principal que recebe numero n e caminho path e devolve lista de listas das palavras ,ais frequentes por cluster
-    def gerar_n_palavras_mais_frequentes_por_cluster(n, kmeans):
-        corpus = PalavrasMaisFrequentesPorCluster.__get_corpus()
+    def gerar_n_palavras_mais_frequentes_por_cluster(self,n, kmeans):
+        corpus = PalavrasMaisFrequentesPorCluster.__get_corpus(self)
         corpus_clusterizado = PalavrasMaisFrequentesPorCluster.__get_corpus_clusterizado(corpus,kmeans)
         palavras_clusterizadas = PalavrasMaisFrequentesPorCluster.__get_palavras_clusterizadas(corpus_clusterizado)
         return PalavrasMaisFrequentesPorCluster.__get_n_palavras_mais_frequentes_cluster(n, palavras_clusterizadas)
