@@ -3,6 +3,7 @@ import pickle
 from pprint import pprint
 import re
 import unicodedata
+import numpy as np
 
 def strip_accents(text):
     """
@@ -37,7 +38,6 @@ def text_to_id(text):
     text = re.sub('[^0-9a-zA-Z]', ' ', text)
     return text
 
-
 class IncrementalDict(dict):
     def __missing__(self, key):
         return None
@@ -45,21 +45,81 @@ class IncrementalDict(dict):
 RESULTS_FILENAME = "TopicosResumidos.txt"
 BASEFOLDER = 'CidadaoData'
 # PPRINTER = PrettyPrinter(4)
-
+SAVEFOLDER = "CategorizedWaifus/"
 TOPICS = IncrementalDict()
 
-atendimento = [
+atendimento = np.array([
     r'atendimento',
     r'comunicacao.*usuario',
     r'^denuncia.*',
     r'^servicos.*'
-]
+])
 
-telecomunicacoes = [
+telecomunicacoes = np.array([
     r'banda.*larga.*fixa',
-    r'tv.por.assinatura',
-    r''
-]
+    r'tv.*por.*assinatura',
+    r'telefonia'
+])
+
+saude = np.array([
+    r'ambulatorios',
+    r'hospitais',
+    r'postos.*de.*saude',
+    r'medicamentos',
+    r'prestacao',
+    r'zoonoses'
+])
+
+educacao_publica = np.array([
+    r'escola',
+    r'faculdades',
+    r'creches'
+])
+
+infraestrutura = np.array([
+    r'aeroporto',
+    r'buracos',
+    r'estradas',
+    r'expansao',
+    r'iluminacao',
+    r'obras'
+])
+
+meio_ambiente = np.array([
+    r'arvores',
+    r'limpeza',
+    r'lixo',
+    r'meio',
+    r'poluicao'
+])
+
+transporte = np.array([
+    r'acessibilidade',
+    r'bilhetagem',
+    r'concessoes',
+    r'terminais',
+    r'transporte',
+    r'transito',
+    r'voos'
+])
+
+governamental = np.array([
+    r'cidades',
+    r'estados',
+    r'^estadual$',
+    r'uniao',
+    r'cultura',
+    r'seguranca',
+    r'contratos',
+    r'empregados',
+    r'oportunidade',
+    r'trabalho',
+    r'cobranca',
+    r'impostos',
+    r'mensalidades'
+])
+
+
 
 if __name__ == "__main__":
     for year in os.listdir(BASEFOLDER):
@@ -68,17 +128,94 @@ if __name__ == "__main__":
         for month in os.listdir(BASEFOLDER + "/" + year):
             for waifu_name in os.listdir(BASEFOLDER + "/" + year + "/" + month):
                 with open(BASEFOLDER + "/" + year + "/" + month + "/" + waifu_name, mode='rb') as waifu_file:
+                    mitsuketa = False
                     waifu = pickle.load(waifu_file)
-                    topic = waifu['categoria'].strip().split("/")[0].strip().lower()
+                    topic = waifu['categoria'].strip().split("/")[0].strip()
+                    topic = text_to_id(topic).lower()
+
                     for raw_string in atendimento:
                         if re.search(raw_string, topic):
-                            waifu['categoria'] = "Atendimento"
-                        
+                            waifu['categoria'] = "atendimento"
+                            mitsuketa = True                            
                         pass
-                    
+                    if mitsuketa:
+                        waifu_addr = SAVEFOLDER + year + '/' + month + '/' + waifu_name
+                        save_waifu(waifu, waifu_addr)
+                        continue
 
-    with open(RESULTS_FILENAME, "w", encoding='UTF-8') as results_file:
-        pprint(TOPICS, results_file)
-        results_file.write("No. of Topics: {};".format(len(TOPICS.keys())))
+                    for raw_string in telecomunicacoes:
+                        if re.search(raw_string, topic):
+                            waifu['categoria'] = "telecomunicacoes"
+                            mitsuketa = True                            
+                        pass
+                    if mitsuketa:
+                        waifu_addr = SAVEFOLDER + year + '/' + month + '/' + waifu_name
+                        save_waifu(waifu, waifu_addr)
+                        continue
+                        
+                    for raw_string in saude:
+                        if re.search(raw_string, topic):
+                            waifu['categoria'] = "saude"
+                            mitsuketa = True                            
+                        pass
+                    if mitsuketa:
+                        waifu_addr = SAVEFOLDER + year + '/' + month + '/' + waifu_name
+                        save_waifu(waifu, waifu_addr)
+                        continue
 
+                    for raw_string in educacao_publica:
+                        if re.search(raw_string, topic):
+                            waifu['categoria'] = "educacao_publica"
+                            mitsuketa = True                            
+                        pass
+                    if mitsuketa:
+                        waifu_addr = SAVEFOLDER + year + '/' + month + '/' + waifu_name
+                        save_waifu(waifu, waifu_addr)
+                        continue
+
+                    for raw_string in infraestrutura:
+                        if re.search(raw_string, topic):
+                            waifu['categoria'] = "infraestrutura"
+                            mitsuketa = True                            
+                        pass
+                    if mitsuketa:
+                        waifu_addr = SAVEFOLDER + year + '/' + month + '/' + waifu_name
+                        save_waifu(waifu, waifu_addr)
+                        continue
+
+                    for raw_string in meio_ambiente:
+                        if re.search(raw_string, topic):
+                            waifu['categoria'] = "meio_ambiente"
+                            mitsuketa = True                            
+                        pass
+                    if mitsuketa:
+                        waifu_addr = SAVEFOLDER + year + '/' + month + '/' + waifu_name
+                        save_waifu(waifu, waifu_addr)
+                        continue
+
+                    for raw_string in transporte:
+                        if re.search(raw_string, topic):
+                            waifu['categoria'] = "transporte"
+                            mitsuketa = True                            
+                        pass
+                    if mitsuketa:
+                        waifu_addr = SAVEFOLDER + year + '/' + month + '/' + waifu_name
+                        save_waifu(waifu, waifu_addr)
+                        continue
+
+                    for raw_string in governamental:
+                        if re.search(raw_string, topic):
+                            waifu['categoria'] = "governamental"
+                            mitsuketa = True                            
+                        pass
+                    if mitsuketa:
+                        waifu_addr = SAVEFOLDER + year + '/' + month + '/' + waifu_name
+                        save_waifu(waifu, waifu_addr)
+                        continue
+
+def save_waifu(waifu, waifu_addr):
+    if not os.path.exists(waifu_addr):
+            os.makedirs(waifu_addr)
+    with open(waifu_addr, "wb") as f:
+        pickle.dump(waifu, f)    
     pass
