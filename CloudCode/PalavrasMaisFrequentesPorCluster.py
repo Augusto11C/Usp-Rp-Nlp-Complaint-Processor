@@ -3,6 +3,10 @@ import pickle
 import re
 import os
 from sklearn.cluster import KMeans
+import sys
+
+sys.path.insert(0, '..\PreProcessor')
+from Preprocessor import Preprocessor
 
 
 class PalavrasMaisFrequentesPorCluster:
@@ -27,7 +31,7 @@ class PalavrasMaisFrequentesPorCluster:
         """recebe a lista de listas de textos, transforma a lista de textos em lista de palavras 
     e devolve lista de listas de palavras, em que cada lista interna representa um cluster"""
     def __get_palavras_clusterizadas(corpus_clusterizado):
-        palavras_clusterizadas = [[] for _ in range(len(corpus_clusterizado))]
+        '''palavras_clusterizadas = [[] for _ in range(len(corpus_clusterizado))]
         for n_cluster,cluster in enumerate(corpus_clusterizado):
             string = ""
             for texto in cluster:
@@ -37,10 +41,7 @@ class PalavrasMaisFrequentesPorCluster:
                     palavras_clusterizadas[n_cluster].append(palavra)
         #return palavras_clusterizadas
         stopwordz = nltk.corpus.stopwords.words('portuguese')+["","\r\n","pois","que","pra","ter","fazer","ser","para"]        
-        #stopWords = [x for x in ENGLISH_STOP_WORDS]
-        '''otherCommonWords = ['make','year','years','new','people','said','say','time','brown','good','told','000','says','took','way','think','going','just','don','did','use','best','didn', 'mln', 'cts', 'net', 'dlrs', 'shr', 'blah', 'revs', 'qtr', 'oper', 'march', 'bank', 'company', 'corp', 'sales', 'dlr', 'billion', 'stg', 'loss', 'profit', 'revs', 'div', 'pct', 'record', 'prior', 'pay', 'qtly', 'dividend', '4th', 'note', 'sets', 'avg', 'shrs', 'includes', 'quarterly', 'share', 'shares', 'miles', 'mths', 'april', 'february', 'stock', 'prices', 'price', 'market', 'government', 'exchange', 'january', 'york', 'week', 'quarter', 'december', 'added', 'production', 'bbl', 'feb', 'official', 'international', 'deficit', 'raises', 'debit', 'trade', 'baker', 'rate', 'crude', 'tax', 'debt', 'debts', 'money', 'business', 'offer', 'foreign', 'contract', 'agreement', 'systems', 'board', '1st', '2nd', '3rd', 'commercial', 'dollar', 'dollars', 'excludes', 'extraordinary', 'securities', 'trading', 'economic', 'current', 'financial', 'issue', 'today', 'rose', 'expected', 'dec', 'jan', 'gain', 'declared', 'months', 'payable', 'available', 'income', 'operations', 'regular', 'traders', 'revenue', 'national', 'world', 'effective', 'wti', 'making', 'sale', 'results', 'periods', 'respectively', 'gain', 'month', 'common', 'credit', 'buy', 'public', 'initial', 'talks', 'total', 'bond', 'expects', 'sell', 'twa', 'averager', 'ended', 'forth', 'compared', 'period', 'sees', 'ago', 'fiscal', 'budget', 'end', 'department', 'day', 'group', 'cash', 'earnings', 'include', 'exclude', 'june', 'pre', 'rev', 'fall', 'raise', 'agreed', 'fourth', 'proceeds', 'american', 'output', 'president', 'qtlys', 'analysts', 'tonnes']
-        for w in otherCommonWords:
-            stopWords.append(w)'''
+        
         palavras_clusterizadas = [[] for _ in range(len(corpus_clusterizado))]
         for n_cluster,cluster in enumerate(corpus_clusterizado):
             string = ""
@@ -54,8 +55,16 @@ class PalavrasMaisFrequentesPorCluster:
                 word = palavra.replace("\\s+","")
                 
                 if(word not in stopwordz and not len(word) <= 2 and not word.isdigit()):
-                    palavras_clusterizadas[n_cluster].append(word)
-            
+                    palavras_clusterizadas[n_cluster].append(word)'''
+        preprocessor = Preprocessor
+        palavras_clusterizadas = [[] for _ in range(len(corpus_clusterizado))]
+        for n_cluster,cluster in enumerate(corpus_clusterizado):
+            palavras_tokenizadas = []
+            for texto in cluster:
+                texto_preprocessado = preprocessor.preprocess(texto)
+                palavras_tokenizadas = palavras_tokenizadas + preprocessor.tokenize_string(texto_preprocessado)
+            palavras_clusterizadas[n_cluster] = palavras_clusterizadas[n_cluster] + palavras_tokenizadas
+
         return palavras_clusterizadas
 
         #recebe uma lista simples de palavras e devolve uma lista de tuplas(palavra, frequencia)
