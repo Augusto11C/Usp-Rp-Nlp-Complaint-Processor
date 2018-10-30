@@ -10,26 +10,26 @@ import sys
 
 sys.path.insert(0, '..\CloudCode')
 from Ourwordcloud import Ourwordcloud
+sys.path.insert(1, '..\Preprocessor')
+from Preprocessor import Preprocessor
 # import Ourwordcloud
 import PalavrasMaisFrequentesPorCluster
 import GroupedColorFunc
 
 data = []
 stopwordz = nltk.corpus.stopwords.words('portuguese')
+preprocessor = Preprocessor
 
 for d in os.listdir("../../CidadaoData/2017/Dezembro"):
 	dict = pickle.load(open("../../CidadaoData/2017/Dezembro/"+d,"rb"), encoding="utf-8")
 	data.append(dict["reclamacao"].strip().lower())
 
-CV = CountVectorizer(analyzer="word",preprocessor=None,stop_words=stopwordz) 
 
-td = CV.fit_transform(text for text in data)
+td = preprocessor.returnTF(data)
 
 kmeans = KMeans(n_clusters=9, verbose=1).fit(td)
 
-TV = TfidfVectorizer(analyzer="word",preprocessor=None,stop_words=stopwordz)
-
-td = TV.fit_transform(text for text in data)
+td = preprocessor.returnTFIDF(data)
 
 kmeans = KMeans(n_clusters=9, verbose=1).fit(td)
 

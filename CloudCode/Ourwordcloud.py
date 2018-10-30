@@ -9,7 +9,7 @@ class Ourwordcloud():
 
     
     def get_lista_cores(self):
-        cores = ['midnightblue','salmon','red','green','purple','yellow','cyan']
+        cores = ['midnightblue','salmon','red','green','purple','yellow','cyan', 'pink', 'brown']
         return cores
 
     def colorir_palavras_de_um_cluster(self, lista_palavras_mais_frequentes_do_cluster, cor):
@@ -49,7 +49,7 @@ class Ourwordcloud():
             #color_to_words = self.colorir_palavras_de_um_cluster(teste, cor)
             color_to_words = self.colorir_palavras_de_um_cluster(palavras_concatenadas, cor)
             #print(color_to_words)
-            grouped_color_func = GroupedColorFunc.GroupedColorFunc(color_to_words, default_color)
+            grouped_color_func = GroupedColorFunc.GroupedColorFunc(color_to_words, cor)
             #print(grouped_color_func)
             wc = WordCloud(width = 2000,height = 1800, background_color = 'white', min_font_size = 5, relative_scaling = 0.5,  ).generate(palavras_concatenadas)
             #print("Depois WordCloud")
