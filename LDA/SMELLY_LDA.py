@@ -67,7 +67,7 @@ def load_waifus(dump=False):
 if __name__ == "__main__":
     waifu_alr_exists = False
     for file_name in os.listdir('.'):
-        if re.search("waifu", file_name):
+        if re.search(r"waifu", file_name):
             waifu_alr_exists = True
             print("Waifus already saved; using existing ones")
     if waifu_alr_exists:
