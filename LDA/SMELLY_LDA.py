@@ -28,26 +28,29 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.decomposition import NMF, LatentDirichletAllocation
 import pickle, os
 import re
+import sys
 
 import nltk
 
-n_samples = 2000
-n_features = 3000
-n_components = 10
-n_top_words = 20
 
-BASEFOLDER = '../../CategorizedWaifus/'
+BASEWAIFUSFOLDER = '../../CategorizedWaifus/'
 
+def print_top_words(model, feature_names, n_top_words):
+    for topic_idx, topic in enumerate(model.components_):
+        print("Topic #{}:".format(topic_idx))
+        print(" ".join([feature_names[i]
+                        for i in topic.argsort()[:-n_top_words - 1:-1]]))
+    print("")
 
-def load_waifus(dump=False):
+def load_waifus(dump=False): #returns tuples
     waifu_list = []
     waifu_path_list = []
-    for year in os.listdir(BASEFOLDER):
+    for year in os.listdir(BASEWAIFUSFOLDER):
         # if "waifu" in year:
         #     continue
-        for month in os.listdir(BASEFOLDER + "/" + year):
-            for waifu_name in os.listdir(BASEFOLDER + "/" + year + "/" + month):
-                with open(BASEFOLDER + "/" + year + "/" + month + "/" + waifu_name, 'rb') as waifu_file:
+        for month in os.listdir(BASEWAIFUSFOLDER + "/" + year):
+            for waifu_name in os.listdir(BASEWAIFUSFOLDER + "/" + year + "/" + month):
+                with open(BASEWAIFUSFOLDER + "/" + year + "/" + month + "/" + waifu_name, 'rb') as waifu_file:
                     waifu = pickle.load(waifu_file)
                     waifu_list.append(waifu['reclamacao'].strip())
                     waifu_path_list.append( year + "/" + month + "/" + waifu_name)
@@ -64,47 +67,6 @@ def load_waifus(dump=False):
     return waifu_list, waifu_path_list
 
 
-if __name__ == "__main__":
-    waifu_alr_exists = False
-    for file_name in os.listdir('.'):
-        if re.search(r"waifu", file_name):
-            waifu_alr_exists = True
-            print("Waifus already saved; using existing ones")
-    if waifu_alr_exists:
-        with open("waifu_list.tuple", "rb") as f:
-            waifu_list = pickle.load(f)
-        with open("waifu_path_list.tuple", "rb") as f:
-            waifu_path_list = pickle.load(f)
-    else:
-        waifu_list, waifu_path_list = load_waifus(dump=True)
-
-
-    lda_from_waifus(waifu_list, 6)
-
-    
-
-    pass
-
-def print_top_words(model, feature_names, n_top_words):
-    for topic_idx, topic in enumerate(model.components_):
-        print("Topic #%d:" % topic_idx)
-        print(" ".join([feature_names[i]
-                        for i in topic.argsort()[:-n_top_words - 1:-1]]))
-    print()
-
-def lda_from_waifus(waifu_list: tuple, n_topics=8):      
-    print("Loading dataset...")
-    t0 = time()
-    # Using tf-idf features for LDA
-    stopwords = nltk.corpus.stopwords.words('portuguese')+["","\r\n","pois","que","pra","ter","fazer","ser","para"]
-    print("Extracting tf-idf features from the waifus...")
-    tfidf_vectorizer = TfidfVectorizer(max_df=0.95,
-                                       max_features=n_features,
-                                       stop_words=stopwords)
-
-    tfidf = tfidf_vectorizer.fit_transform(waifu for waifu in waifu_list)
-    print("done in %0.3fs." % (time() - t0))
-    
     # Use tf (raw term count) features for LDA.
     # print("Extracting tf features for LDA...")
     # tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2,
@@ -113,7 +75,6 @@ def lda_from_waifus(waifu_list: tuple, n_topics=8):
     # t0 = time()
     # tf = tf_vectorizer.fit_transform(data_samples)
     # print("done in %0.3fs." % (time() - t0))
-
     # Fit the NMF model
     # print("Fitting the NMF model (Frobenius norm) with tf-idf features, "
     #       "n_samples=%d and n_features=%d..."
@@ -131,17 +92,61 @@ def lda_from_waifus(waifu_list: tuple, n_topics=8):
     #           beta_loss='kullback-leibler', solver='mu', max_iter=1000, alpha=.1,
     #           l1_ratio=.5).fit(tfidf)
     # print("done in %0.3fs." % (time() - t0))
-    tfidf_featurte_names = tfidf_vectorizer.get_feature_names()#matriz, linha palavra coluna documento
-    print("Fitting LDA models with tf features, "
-          "n_samples=%d and n_features=%d..."
-          % (n_samples, n_features))
+
+def lda_from_waifus(waifu_list: tuple, n_topics=8, n_features=1000, n_top_words=20):      
+    print("Loading dataset...")
+    print("Dataset length: {}".format(len(waifu_list)))
+    
+    t0 = time()
+    # Using tf-idf features for LDA
+    stopwords = nltk.corpus.stopwords.words('portuguese')
+    print("Extracting tf-idf features from the waifus...")
+    tfidf_vectorizer = TfidfVectorizer(max_df=0.95, min_df=2,
+                                       max_features=n_features,
+                                       stop_words=stopwords)
+
+    tfidf = tfidf_vectorizer.fit_transform(waifu for waifu in waifu_list)
+    print("done in %0.3fs." % (time() - t0))
+    
+    tfidf_feature_names = tfidf_vectorizer.get_feature_names() 
+
+    print("Fitting LDA models with tfidf features, "
+          "n_features=%d..."
+          % n_features)
     lda = LatentDirichletAllocation(n_components=n_topics, max_iter=5,
                                     learning_method='online',
-                                    learning_offset=50.,
-                                    random_state=0)
+                                    learning_offset=50.,    
+                                    random_state=0, n_jobs=-1)
     t0 = time()
     lda.fit(tfidf)
     print("done in %0.3fs." % (time() - t0))
     print("\nTopics in LDA model:")
-    print_top_words(lda, tfidf_featurte_names, 5)
+    print_top_words(lda, tfidf_feature_names, n_top_words)
+    return lda, tfidf_feature_names
 
+
+
+if __name__ == "__main__":  
+    n_features = 500
+    n_topics = int(sys.argv[1])
+    n_top_words = 20
+    waifu_alr_exists = False
+    for file_name in os.listdir('.'):
+        if re.search("waifu", file_name):
+            waifu_alr_exists = True
+            print("waifus found, using existing ones")
+            break;
+    if waifu_alr_exists:
+        with open("waifu_list.tuple", "rb") as f:
+            waifu_list = pickle.load(f)
+        with open("waifu_path_list.tuple", "rb") as f:
+            waifu_path_list = pickle.load(f)
+    else:
+        waifu_list, waifu_path_list = load_waifus(dump=True)
+
+    lda = lda_from_waifus(waifu_list, n_topics=n_topics, n_features=n_features, n_top_words=n_top_words)
+    with open('LDA_{}_OBJ_{}.lda'.format(n_features ,n_topics), "wb") as f:
+        pickle.dump(lda, f)
+
+
+    pass
