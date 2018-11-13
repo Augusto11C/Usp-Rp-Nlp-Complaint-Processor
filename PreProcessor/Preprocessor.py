@@ -8,10 +8,12 @@ import unicodedata
 
 def strip_accents(text):
     text = text.lower()
+
     try:
         text = encode(text,'utf-8')
     except (TypeError, NameError) as e:
-        print(e)
+        #print(e)
+        pass
 
     text = unicodedata.normalize('NFD', text)
     text = text.encode('ascii', 'ignore')
@@ -39,17 +41,17 @@ class Preprocessor():
         return tokenizedWords
 
     @classmethod
-    def returnTFIDF(cls, data):
+    def returnTF(cls, data):
         stopwordz = nltk.corpus.stopwords.words('portuguese')
-        TV = CountVectorizer(analyzer="word",preprocessor=Preprocessor.preprocess,stop_words=stopwordz, lowercase = True)
+        TV = CountVectorizer(analyzer="word",preprocessor=Preprocessor.preprocess,stop_words=stopwordz, lowercase = True, max_features=1000)
         td = TV.fit_transform(text for text in data)
         #print(TV.get_feature_names())
         return td
 
     @classmethod
-    def returnTF(cls, data):
+    def returnTFIDF(cls, data):
         stopwordz = nltk.corpus.stopwords.words('portuguese')
-        TV = TfidfVectorizer(analyzer="word",preprocessor=Preprocessor.preprocess,stop_words=stopwordz, lowercase = True)
+        TV = TfidfVectorizer(analyzer="word",preprocessor=Preprocessor.preprocess,stop_words=stopwordz, lowercase = True,max_features=1000)
         td = TV.fit_transform(text for text in data)
         #print(TV.get_feature_names())
         return td
