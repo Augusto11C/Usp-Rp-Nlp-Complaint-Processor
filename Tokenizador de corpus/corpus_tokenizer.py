@@ -34,7 +34,8 @@ preprocessor = Preprocessor
 i = 1
 for text in data:
     print("Tokenizando texto " + str(i))
-    words_list = preprocessor.tokenize_string(text)
+    text_preprocessed = preprocessor.preprocess(text)
+    words_list = preprocessor.tokenize_string(preprocessed_text)
     data_tokenized.append(words_list)
     i = i+1 
 pickle.dump(data_tokenized,open("corpus_tokenizado.lai","wb"))
