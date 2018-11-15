@@ -33,7 +33,7 @@ data_tokenized = []
 preprocessor = Preprocessor
 i = 1
 for text in data:
-    print("Tokenizando texto " + i)
+    print("Tokenizando texto " + str(i))
     words_list = preprocessor.tokenize_string(text)
     data_tokenized.append(words_list)
     i = i+1 
