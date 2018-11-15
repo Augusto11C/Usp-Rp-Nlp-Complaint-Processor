@@ -29,8 +29,8 @@ from sklearn.decomposition import NMF, LatentDirichletAllocation
 import pickle, os
 import re
 import sys
-
 import nltk
+import numpy as np
 
 
 BASEWAIFUSFOLDER = '../../CategorizedWaifus/'
@@ -42,7 +42,7 @@ def print_top_words(model, feature_names, n_top_words):
                         for i in topic.argsort()[:-n_top_words - 1:-1]]))
     print("")
 
-def load_waifus(dump=False): #returns tuples
+def load_waifus(dump=False, use_word2vec=False): #returns tuples
     waifu_list = []
     waifu_path_list = []
     for year in os.listdir(BASEWAIFUSFOLDER):
@@ -51,16 +51,29 @@ def load_waifus(dump=False): #returns tuples
         for month in os.listdir(BASEWAIFUSFOLDER + "/" + year):
             for waifu_name in os.listdir(BASEWAIFUSFOLDER + "/" + year + "/" + month):
                 with open(BASEWAIFUSFOLDER + "/" + year + "/" + month + "/" + waifu_name, 'rb') as waifu_file:
-                    waifu = pickle.load(waifu_file)
-                    waifu_list.append(waifu['reclamacao'].strip())
+                    waifu = pickle.load(waifu_file, encoding="utf-8")
+                    if not use_word2vec:
+                        waifu_list.append(waifu['reclamacao'].strip())
+                    else:
+                        try:
+                            waifu_list.append(waifu['word2vec'])
+                        except:
+                            print("Your waifu database does not contain word embeddings!")
+                            sys.exit(-1)
                     waifu_path_list.append( year + "/" + month + "/" + waifu_name)
+                            
+                    
 
     waifu_list = tuple(waifu_list)
     waifu_path_list = tuple(waifu_path_list)
 
     if dump:
-        with open("waifu_list.tuple", "wb") as f:
-            pickle.dump(waifu_list,f)
+        if use_word2vec:
+            with open("waifu_w2v.tuple", "wb") as f:
+                pickle.dump(waifu_list,f)    
+        else:
+            with open("waifu_list.tuple", "wb") as f:
+                pickle.dump(waifu_list,f)
         with open("waifu_path_list.tuple", "wb") as f:
             pickle.dump(waifu_path_list,f)
     
@@ -93,44 +106,60 @@ def load_waifus(dump=False): #returns tuples
     #           l1_ratio=.5).fit(tfidf)
     # print("done in %0.3fs." % (time() - t0))
 
-def lda_from_waifus(waifu_list: tuple, n_topics=8, n_features=1000, n_top_words=20):      
+def lda_from_waifus(waifus: tuple, n_topics=8, n_features=1000, n_top_words=20, use_word2vec=False):      
     print("Loading dataset...")
-    print("Dataset length: {}".format(len(waifu_list)))
+    print("Dataset length: {}".format(len(waifus)))
     
+    stopwords = nltk.corpus.stopwords.words('portuguese') + ["","\r\n","pois","que","pra","ter","fazer","ser","para"]
     t0 = time()
-    # Using tf-idf features for LDA
-    stopwords = nltk.corpus.stopwords.words('portuguese')
-    print("Extracting tf-idf features from the waifus...")
-    tfidf_vectorizer = TfidfVectorizer(max_df=0.95, min_df=2,
-                                       max_features=n_features,
-                                       stop_words=stopwords)
-
-    tfidf = tfidf_vectorizer.fit_transform(waifu for waifu in waifu_list)
-    print("done in %0.3fs." % (time() - t0))
     
-    tfidf_feature_names = tfidf_vectorizer.get_feature_names() 
-
-    print("Fitting LDA models with tfidf features, "
-          "n_features=%d..."
-          % n_features)
     lda = LatentDirichletAllocation(n_components=n_topics, max_iter=5,
                                     learning_method='online',
                                     learning_offset=50.,    
                                     random_state=0, n_jobs=-1)
-    t0 = time()
-    lda.fit(tfidf)
-    print("done in %0.3fs." % (time() - t0))
-    print("\nTopics in LDA model:")
-    print_top_words(lda, tfidf_feature_names, n_top_words)
-    return lda, tfidf_feature_names
+    
+    if not use_word2vec:
+        # Using tf-idf features for LDA
+        print("Extracting tf-idf features from the waifus...")
+        tfidf_vectorizer = TfidfVectorizer(max_df=0.95, min_df=2,
+                                           max_features=n_features,
+                                           stop_words=stopwords)
 
+        tfidf = tfidf_vectorizer.fit_transform(waifu for waifu in waifus)
+        print("done in %0.3fs." % (time() - t0))
+    
+        tfidf_feature_names = tfidf_vectorizer.get_feature_names() 
+        
+        t0 = time()
+        print("Fitting LDA models with tfidf features, "
+              "n_features=%d..."
+            % n_features)
+            
+        lda.fit(tfidf)
+        print("done in %0.3fs." % (time() - t0))
+        print("\nTopics in LDA model:")
+        print_top_words(lda, tfidf_feature_names, n_top_words)
+        return lda, tfidf_feature_names
+    
+    else:
+        print("Extracting word embeddings from the waifus...")
+        w2v_matrix = np.stack(waifus)
+        print("Fitting LDA models with word embeddings, "
+              "n_features=%d..."
+            % len(waifus[0]))
+        lda.fit(w2v_matrix)
+        print("done in %0.3fs." % (time() - t0))
+        return lda
+        
 
 
 if __name__ == "__main__":  
     n_features = 500
     n_topics = int(sys.argv[1])
+    use_word2vec = sys.argv([2]).lower() in ("1", "true") 
     n_top_words = 20
     waifu_alr_exists = False
+    
     for file_name in os.listdir('.'):
         if re.search("waifu", file_name):
             waifu_alr_exists = True
