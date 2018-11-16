@@ -14,17 +14,20 @@ from Ourwordcloud import Ourwordcloud
 sys.path.insert(1, '..\Preprocessor')
 from Preprocessor import Preprocessor
 # import Ourwordcloud
-from PalavrasMaisFrequentesPorCluster import PalavrasMaisFrequentesPorCluster
+from PalavrasMaisFrequentesPorCluster2 import PalavrasMaisFrequentesPorCluster2
 import GroupedColorFunc
+sys.path.insert(2, '..\TokenizadorDeCorpus')
+
 
 resultados_kmeans = pickle.load(open('resultados_kmeans.jojo','rb'))
+corpus_tokenizado = pickle.load(open('..\TokenizadorDeCorpus\corpus_tokenizado.lai','rb'))
 print(resultados_kmeans['kmeans'])
 data = resultados_kmeans['data']
 lista_kmeans = resultados_kmeans['kmeans']
-palavrasMaisFrequentesPorCluster = PalavrasMaisFrequentesPorCluster(data)
+palavrasMaisFrequentesPorCluster2 = PalavrasMaisFrequentesPorCluster2(corpus_tokenizado)
 for kmeans in lista_kmeans:
 	print(kmeans)
-	tuplas_mais_frequentes = palavrasMaisFrequentesPorCluster.gerar_n_palavras_mais_frequentes_por_cluster(20,kmeans)
-	Ourwordcloud().gerar_wordcloud_e_salvar(lista_palavras_mais_frequentes_clusterizadas = lista_das_palavras_mais_frequentes_por_cLuster, nome_do_arquivo = "kmeans_tfidf_k=" + kmeans.n_cluster)
+	lista_das_palavras_mais_frequentes_por_cLuster = palavrasMaisFrequentesPorCluster2.gerar_n_palavras_mais_frequentes_por_cluster(20,kmeans)
+	Ourwordcloud().gerar_wordcloud_e_salvar(lista_palavras_mais_frequentes_clusterizadas = lista_das_palavras_mais_frequentes_por_cLuster, nome_do_arquivo = "kmeans_tfidf_k=" + str(kmeans.n_clusters))
 
 
