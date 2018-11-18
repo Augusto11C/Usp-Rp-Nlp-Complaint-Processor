@@ -29,6 +29,7 @@ class PalavrasMaisFrequentesPorCluster:
 
     #recebe uma lista do corpus e um objeto kmeans e devolve uma lista de listas de textos, em que cada lista interna representa um cluster
     def __get_corpus_clusterizado(corpus, kmeans):
+        print("clusterizando corpus")
         corpus_clusterizado = [[] for _ in range(kmeans.n_clusters)]
         for index, n_cluster in zip([i for i in range(len(kmeans.labels_))] ,kmeans.labels_):
             corpus_clusterizado[n_cluster].append(corpus[index])
@@ -37,6 +38,7 @@ class PalavrasMaisFrequentesPorCluster:
         """recebe a lista de listas de textos, transforma a lista de textos em lista de palavras 
     e devolve lista de listas de palavras, em que cada lista interna representa um cluster"""
     def __get_palavras_clusterizadas(corpus_clusterizado):
+        print("tokenizando clusteres")
         '''palavras_clusterizadas = [[] for _ in range(len(corpus_clusterizado))]
         for n_cluster,cluster in enumerate(corpus_clusterizado):
             string = ""
@@ -75,7 +77,9 @@ class PalavrasMaisFrequentesPorCluster:
 
         #recebe uma lista simples de palavras e devolve uma lista de tuplas(palavra, frequencia)
     def __get_tupla_frequencia_palavras(lista_palavras): 
+        print("ordenando palavras")
         lista = sorted(lista_palavras)
+        print("gerando tuplas")
         lista_tuplas = []
         contador = 1
         atual = lista[0]
@@ -92,6 +96,7 @@ class PalavrasMaisFrequentesPorCluster:
 
       #recebe um numero n e lista de listas de palavras e retorna lista de listas das n palavras mais frequentes de cada cluster
     def __get_n_palavras_mais_frequentes_cluster(n, lista_palavras_clusterizadas):
+        print("gerando n palavras mais frequentes")
         lista_mais_frequentes = [[] for _ in range(len(lista_palavras_clusterizadas))]
         for n_cluster,cluster in enumerate(lista_palavras_clusterizadas):
             tuplas = PalavrasMaisFrequentesPorCluster.__get_tupla_frequencia_palavras(cluster)

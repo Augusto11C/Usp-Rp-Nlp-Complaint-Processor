@@ -14,8 +14,9 @@ sys.path.insert(0, './CloudCode')
 # import Ourwordcloud
 from PalavrasMaisFrequentesPorCluster import PalavrasMaisFrequentesPorCluster
 # import GroupedColorFunc
+import GroupedColorFunc
 
-sys.path.insert(0, './RestauranteChinesDePalavras')
+sys.path.insert(0, '..\RestauranteChinesDePalavras')
 from yakisoba_do_chifu import yakisoba_do_chifu
 
 data = []
@@ -40,6 +41,7 @@ kmeans = KMeans(n_clusters=9, verbose=1).fit(td)
 labels = kmeans.labels_
 print(metrics.silhouette_score(td, labels, metric='euclidean'))
 
+
 # lista_das_palavras_mais_frequentes_por_cLuster = PalavrasMaisFrequentesPorCluster.PalavrasMaisFrequentesPorCluster.gerar_n_palavras_mais_frequentes_por_cluster(20, kmeans)
 # print(lista_das_palavras_mais_frequentes_por_cLuster)
 
@@ -57,5 +59,5 @@ lista_de_cluster = yakisoba_do_chifu.calcular_media_dos_clusters()
 print(lista_de_cluster)
 
 #listaKappa = [[("augusto",20)], [("lucas",10)], [("Fernado",5)]]
-# Ourwordcloud().gerar_wordcloud_e_salvar(lista_palavras_mais_frequentes_clusterizadas = lista_das_palavras_mais_frequentes_por_cLuster, nome_do_arquivo = "wordCloud")
+
 
