@@ -34,23 +34,34 @@ kmeans_normal = pickle.load(open("../../KMEANS_BASE/resultados_kmeans.jojo","rb"
 kmeans_do_arqKmeans = kmeans_normal['kmeans']
 data_do_arqKmeans = kmeans_normal['data']
 
-obj_clusterizado = "augusto"
-obj_clusterizado = PalavrasMaisFrequentesPorCluster(data_do_arqKmeans).get_corpus_clusterizado(data_do_arqKmeans, kmeans_do_arqKmeans[1])
+# obj_clusterizado = "augusto"
+# obj_clusterizado = PalavrasMaisFrequentesPorCluster(data_do_arqKmeans).get_corpus_clusterizado(data_do_arqKmeans, kmeans_do_arqKmeans[1])
 
-if (obj_clusterizado == "augusto"):
-    print("AUguto")
 
+# palavras_clusterizadas = PalavrasMaisFrequentesPorCluster(data_do_arqKmeans).get_palavras_clusterizadas(obj_clusterizado)
+# print(palavras_clusterizadas[1])
+
+# for kmean_aq in kmeans_do_arqKmeans:
+#     palavras_clusterizadas = PalavrasMaisFrequentesPorCluster(data_do_arqKmeans).get_palavras_clusterizadas(data_do_arqKmeans,obj_clusterizado)
+#     for lista_palavras in palavras_clusterizadas:
+#         yakisoba_do_chifu = yakisoba_do_chifu()
+#         yakisoba_do_chifu.tirar_pedido(self, lista_de_palavras_tokenizadas):
+#         yakisoba_do_chifu.prepara_os_ingredientes()
+#         yakisoba_do_chifu.cozinhar()
+#         yakisoba_do_chifu.empratar()
+#         lista_de_cluster = yakisoba_do_chifu.calcular_media_dos_clusters()
+#         PalavrasMaisFrequentesPorCluster(data_aq).get_n_palavras_mais_frequentes_cluster(20,lista_de_cluster)
+
+
+num_kmeans = int(sys.argv[1])
+
+obj_clusterizado = PalavrasMaisFrequentesPorCluster(data_do_arqKmeans).get_corpus_clusterizado(data_do_arqKmeans, kmeans_do_arqKmeans[num_kmeans])
 palavras_clusterizadas = PalavrasMaisFrequentesPorCluster(data_do_arqKmeans).get_palavras_clusterizadas(obj_clusterizado)
-print(palavras_clusterizadas[1])
-
-for kmean_aq in kmeans_do_arqKmeans:
-    obj_clusterizado = PalavrasMaisFrequentesPorCluster(data_do_arqKmeans).get_corpus_clusterizado(data_do_arqKmeans,kmean_aq)
-    palavras_clusterizadas = PalavrasMaisFrequentesPorCluster(data_do_arqKmeans).get_palavras_clusterizadas(obj_clusterizado)
-    for lista_palavras in palavras_clusterizadas:
+for lista_palavras in palavras_clusterizadas:
         yakisoba_do_chifu = yakisoba_do_chifu()
-        yakisoba_do_chifu.tirar_pedido(self, lista_de_palavras_tokenizadas):
+        yakisoba_do_chifu.tirar_pedido(lista_palavras)
         yakisoba_do_chifu.prepara_os_ingredientes()
         yakisoba_do_chifu.cozinhar()
         yakisoba_do_chifu.empratar()
-        yakisoba_do_chifu.calcular_media_dos_clusters()
-
+        lista_de_cluster = yakisoba_do_chifu.calcular_media_dos_clusters()
+        PalavrasMaisFrequentesPorCluster(data_aq).get_n_palavras_mais_frequentes_cluster(20,lista_de_cluster)
