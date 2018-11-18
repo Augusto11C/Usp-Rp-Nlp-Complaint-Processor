@@ -161,3 +161,35 @@ class PalavrasMaisFrequentesPorCluster:
             palavras_clusterizadas[n_cluster] = palavras_clusterizadas[n_cluster] + palavras_tokenizadas
 
         return palavras_clusterizadas
+
+    def get_tupla_frequencia_palavras(self,lista_palavras): 
+        lista = sorted(lista_palavras)
+        lista_tuplas = []
+        contador = 1
+        atual = lista[0]
+        for palavra in lista:
+            if(atual == palavra):
+                contador+=1
+                continue
+            lista_tuplas.append((atual, contador))
+            atual = palavra
+            contador = 1
+        lista_tuplas.append((atual, contador))
+
+        return sorted(lista_tuplas, key = lambda tupla: tupla[1], reverse = True)
+
+      #recebe um numero n e lista de listas de palavras e retorna lista de listas das n palavras mais frequentes de cada cluster
+    def get_n_palavras_mais_frequentes_cluster(self, n, lista_palavras_clusterizadas):
+        lista_mais_frequentes = [[] for _ in range(len(lista_palavras_clusterizadas))]
+        for n_cluster,cluster in enumerate(lista_palavras_clusterizadas):
+            tuplas = PalavrasMaisFrequentesPorCluster.get_tupla_frequencia_palavras(self, cluster)
+            print(tuplas)
+            cont = 0
+            for contador,tupla in enumerate(tuplas):
+
+                if(contador == n):
+                    break
+                lista_mais_frequentes[n_cluster].append(tupla)
+        
+        return lista_mais_frequentes
+
