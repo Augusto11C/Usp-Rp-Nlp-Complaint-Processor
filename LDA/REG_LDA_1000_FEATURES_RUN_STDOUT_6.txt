@@ -1,0 +1,12 @@
+Loading dataset...
+Dataset length: 13601
+Extracting tf-idf features from the waifus...
+done in 2.440s.
+Fitting LDA models with tfidf features, n_features=1000...
+done in 28.829s.
+
+Topics in LDA model:
+Topic #0:
+Cant print lel
+Topic #0:
+Number of waifus taken into account: 13601
