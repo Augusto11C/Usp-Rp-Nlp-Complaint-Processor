@@ -29,5 +29,3 @@ for kmeans in lista_kmeans:
 	print(kmeans)
 	lista_das_palavras_mais_frequentes_por_cLuster = palavrasMaisFrequentesPorCluster2.gerar_n_palavras_mais_frequentes_por_cluster(20,kmeans)
 	Ourwordcloud().gerar_wordcloud_e_salvar(lista_palavras_mais_frequentes_clusterizadas = lista_das_palavras_mais_frequentes_por_cLuster, nome_do_arquivo = "kmeans_tfidf_k=" + str(kmeans.n_clusters))
-
-
