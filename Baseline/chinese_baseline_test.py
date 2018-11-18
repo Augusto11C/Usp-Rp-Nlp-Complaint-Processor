@@ -9,7 +9,7 @@ from sklearn.metrics import silhouette_score
 import sys
 
 
-sys.path.insert(0, './CloudCode')
+sys.path.insert(0, '..\CloudCode')
 # from ..CloudCode.Ourwordcloud import Ourwordcloud
 # import Ourwordcloud
 from PalavrasMaisFrequentesPorCluster import PalavrasMaisFrequentesPorCluster
@@ -50,13 +50,14 @@ obj_clusterizado = PalavrasMaisFrequentesPorCluster(data).get_corpus_clusterizad
 palavras_clusterizadas = PalavrasMaisFrequentesPorCluster(data).get_palavras_clusterizadas(obj_clusterizado)
 
 yakisoba_do_chifu = yakisoba_do_chifu()
-yakisoba_do_chifu.tirar_pedido(palavras_clusterizadas[1])
+yakisoba_do_chifu.tirar_pedido(list(set(palavras_clusterizadas[1])))
 yakisoba_do_chifu.prepara_os_ingredientes()
 yakisoba_do_chifu.cozinhar()
-yakisoba_do_chifu.empratar()
-lista_de_cluster = yakisoba_do_chifu.calcular_media_dos_clusters()
 
-print(lista_de_cluster)
+yakisoba_do_chifu.empratar(limite_de_clusters=15)
+
+resp= yakisoba_do_chifu.faz_sobremesa()
+print(resp)
 
 #listaKappa = [[("augusto",20)], [("lucas",10)], [("Fernado",5)]]
 

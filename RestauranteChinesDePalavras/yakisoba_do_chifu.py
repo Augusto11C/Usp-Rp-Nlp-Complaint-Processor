@@ -65,12 +65,20 @@ class yakisoba_do_chifu:
             print("DEU ERRO")
             print(self.lista_de_vetores)
             print("*************")
+            print("Count: " + count + " =-=-=-=-=-=-=-=-=-=-=-=-")
             print(placeholder)
             sys.exit(-1)
         self.lista_de_clusters[0].append((self.lista_de_vetores[count],count))
         for i, vetores in enumerate(self.lista_de_vetores):
+
             if(i <= count):
                 continue
+
+            if(self.is_there_nan(vetores) is True):
+                print("detector de nan 2")
+                continue
+
+
             r = np.random.rand()
             if((r < p) and n_cluster < limite_de_clusters):
                 print("Criou novo cluster")
@@ -80,17 +88,37 @@ class yakisoba_do_chifu:
             else:
                 print("Vai inserir em um cluster existente")
                 self.calcular_media_dos_clusters() 
+                lista_aux_media = [0 for _ in range(len(self.media_dos_cluster))]
                 for ii, media_de_cluster in enumerate(self.media_dos_cluster):
-                    self.media_dos_cluster[ii] = cosine_similarity([media_de_cluster],[vetores])[0][0]
+                    uuuu=cosine_similarity([media_de_cluster],[vetores])[0][0]
+                    #print(uuuu)
+                    lista_aux_media[ii] = uuuu
+
                 #indice do argumento máximo
-                print("Arg max>" + str(np.argmax(self.media_dos_cluster)))
+                #print("Arg max>" + str(np.argmax(lista_aux_media)))
                 print("Len>" + str(len(self.lista_de_clusters)))
                 #print(self.media_dos_cluster)
-                self.lista_de_clusters[np.argmax(self.media_dos_cluster)].append((vetores,i))
+                self.lista_de_clusters[np.argmax(lista_aux_media)].append((vetores,i))
 
         return self.lista_de_clusters
 
+    def is_there_nan(self, vetor):
+#        def is_there_nan(self, vetor):
+        for element in vetor:
+            if(np.isnan(element)):
+                return True
+        return False
 
+
+
+    def faz_sobremesa(self):
+        lista_de_palavras = []
+        for clusterzz in self.lista_de_clusters:
+            indices = [x[1] for x in clusterzz]
+            palavras = [self.lista_de_palavras_tokenizadas[j] for j in indices]
+            lista_de_palavras.append(palavras)
+
+        return lista_de_palavras
 
     def calcular_media_dos_clusters(self):
         #KEEP None
@@ -98,18 +126,18 @@ class yakisoba_do_chifu:
         for i, cluster in enumerate(self.lista_de_clusters):
 
             my_np = np.array([vetor[0] for vetor in cluster])
-            print("my_np")
-            print(my_np)    
+            #print("my_np")
+            #print(my_np)    
 
             my_np_media = my_np.mean(axis=0).astype(np.float32)
-            print("my_np_media")
+            #print("my_np_media")
 
-            print(my_np_media)
+            #print(my_np_media)
                                                                         #buscamos a vetor que representa a palavra na tupla representada por vetor, existem varios vetores de cluster
             self.media_dos_cluster[i] = gensim.matutils.unitvec(np.array([vetor[0] for vetor in cluster]).mean(axis=0).astype(np.float32))
 
-            print('self.media_dos_cluster[i]')
-            print(self.media_dos_cluster[i])
+            #print('self.media_dos_cluster[i]')
+            #print(self.media_dos_cluster[i])
 
         self.media_dos_cluster= np.array(self.media_dos_cluster)
 
