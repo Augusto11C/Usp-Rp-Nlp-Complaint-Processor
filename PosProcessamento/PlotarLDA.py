@@ -19,16 +19,26 @@ import GroupedColorFunc
 sys.path.insert(2, '..\LDA')
 
 n = 5
-i = 6
-tuple = [[]for _ in range(n)]
-for _ in range(n):
-	list = pickle.load(open("..\LDA\TOP_WORDS_DECREASING_LDA_REG_1000_" + str(i) + ".list", "rb"))
-	j = 800
+
+for i in range(6,11):
+	list_LDA = pickle.load(open("..\LDA\TOP_WORDS_DECREASING_LDA_REG_1000_" + str(i) + ".list", "rb"))
+	tuple = [[]for _ in range(i)]
+	for j,list in enumerate(list_LDA):
+		l = 20
+		for w in list:
+			k = j*l*20
+			tuple[j].append((w,k))
+	Ourwordcloud().gerar_wordcloud_e_salvar(lista_palavras_mais_frequentes_clusterizadas = tuple, nome_do_arquivo = "LDA_" + str(i)) 
+
+
+		
+	
+	'''j = 800
 	for word in list:
 		tuple[i-n-1].append((word,j))
 		j = j - 40
 	i = i + 1
-Ourwordcloud().gerar_wordcloud_e_salvar(lista_palavras_mais_frequentes_clusterizadas = tuple, nome_do_arquivo = "LDA")
+Ourwordcloud().gerar_wordcloud_e_salvar(lista_palavras_mais_frequentes_clusterizadas = tuple, nome_do_arquivo = "LDA")'''
 
 
 
