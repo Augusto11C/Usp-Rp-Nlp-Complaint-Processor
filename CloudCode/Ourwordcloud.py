@@ -9,7 +9,7 @@ class Ourwordcloud():
 
     
     def get_lista_cores(self):
-        cores = ['midnightblue','salmon','red','green','purple','yellow','cyan', 'pink', 'brown']
+        cores = ['midnightblue','salmon','red','green','purple','yellow','cyan', 'pink', 'brown', 'maroon', 'magenta', 'lime', 'olive', 'orange']
         return cores
 
     def colorir_palavras_de_um_cluster(self, lista_palavras_mais_frequentes_do_cluster, cor):
