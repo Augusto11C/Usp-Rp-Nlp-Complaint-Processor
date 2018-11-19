@@ -10,7 +10,7 @@ import sys
 import numpy as np
 import nltk
 
-BASEWAIFUSFOLDER = '../CategorizedWaifus+W2V/'
+BASEWAIFUSFOLDER = '../CategorizedWaifus+W2VArrombz/'
 WAIFU_LIST_PATH = "waifu_list.tuple"
 WAIFU_W2V_PATH = "waifu_w2v.tuple"
 
@@ -24,9 +24,10 @@ def print_top_words(model, feature_names, n_top_words):
 
 
 def return_top_words(model, feature_names, n_top_words):
-    for topic_idx, topic in enumerate(model.components_):
-        print("Topic #{}:".format(topic_idx))
-        return [feature_names[i] for i in topic.argsort()[:-n_top_words - 1:-1]]
+    top_words = []
+    for topic in model.components_:
+        top_words.append([feature_names[i] for i in topic.argsort()[:-n_top_words - 1:-1]])
+    return top_words
 
 
 def load_waifus(dump=False, use_word2vec=False):  # returns tuples
