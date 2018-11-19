@@ -143,7 +143,7 @@ def extract_clusters_from_lda(lda_obj: LatentDirichletAllocation, fitting_data):
         row_x_topics = np.tile(row, (n_clusters, 1))
         # 2.4. get the sum of the manhattan distances and
         #      get the arg for the min value from the resulting array,
-        cluster_arg = np.sum(np.abs(row_x_topics - lda_vectors), axis=1).argmax()
+        cluster_arg = np.sum(np.abs(row_x_topics - lda_vectors), axis=1).argmin()
         cluster_args.append(cluster_arg)
 
     print("Number of waifus taken into account: %d" % len(cluster_args))
