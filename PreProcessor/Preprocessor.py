@@ -32,7 +32,7 @@ class Preprocessor():
 
     @classmethod
     def tokenize_string(cls,string):
-        stopwordz = nltk.corpus.stopwords.words('portuguese')+["","\r\n","pois","que","pra","ter","fazer","ser","para"]
+        stopwordz = nltk.corpus.stopwords.words('portuguese')+["","\r\n","pois","que","pra","ter","fazer","ser","para","dia","desde","onde","nao","dias","ate","mes","meses","sao","estao","ainda"]
         words = string.split(" ")
         tokenizedWords = []
         for word in words:
